@@ -70,7 +70,5 @@ function power_prompt_builder(){
   PS1="$PS1 "
 }
 
-
 export PROMPT_COMMAND='power_prompt_builder'
-
 
