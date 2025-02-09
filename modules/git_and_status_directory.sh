@@ -61,7 +61,7 @@ function power_prompt_git_status_directory(){
     upstream=$(git rev-parse --abbrev-ref "@{upstream}" 2>/dev/null)
     if [ -n "$upstream" ]; then
       # Add hyperlink to github repo on cwd in prompt
-      local url=$( git ls-remote --get-url origin | sed 's/github_pat_[^@]*@//' )
+      local url=$( git ls-remote --get-url origin | sed -E 's|(http[s]?://)[^@]*@|\1|' )
       w="$( power_prompt_hyperlink $url " $w" )"
     fi
   fi
