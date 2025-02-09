@@ -2,7 +2,7 @@
 
 export POWER_PROMPT_STRING="power_prompt_statuses -pg -f 11 -b 98;power_prompt_text -t \u -f 15 -b 68;power_prompt_text -t \h -f 15 -b 110;power_prompt_git_status_directory;"
 
-# Supported options are  , , or  
+# Supported options are  , , or , but can use any character
 export POWER_PROMPT_DELIMITER=""
 
 # , , or  respectively
