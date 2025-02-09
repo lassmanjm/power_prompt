@@ -45,7 +45,7 @@ function power_prompt_statuses(){
   git_branch=$(git branch 2>/dev/null | sed -n -e 's/^\* \(.*\)/\1/p')
   if [[ $GIT == "true" ]] && [[ -n "$git_branch" ]]; then
     local remote_hash=$(git ls-remote origin -h refs/heads/$git_branch 2>/dev/null| awk '{print $1}')
-    local local_hash=$(git rev-parse head)
+    local local_hash=$(git rev-parse HEAD)
     # only fetch if the hashes do not match
     if [ "$remote_hash" != "$local_hash" ]; then
       git fetch --quiet >/dev/null 2>&1
