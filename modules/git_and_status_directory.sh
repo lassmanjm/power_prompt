@@ -65,6 +65,5 @@ function power_prompt_git_status_directory(){
     fi
   fi
   echo "$w,$fg,$bg"
-  # echo "$w"
 }
 
