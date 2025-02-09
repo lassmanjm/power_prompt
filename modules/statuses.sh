@@ -55,7 +55,7 @@ function power_prompt_statuses(){
     local upstream=$(git rev-parse --abbrev-ref "@{upstream}" 2>/dev/null)
     if [ -n "$upstream" ]; then
       # get the number of commits ahead/behind
-      local git_ahead_behind=$(git rev-list --left-right --count "$upstream"...head 2>/dev/null)
+      local git_ahead_behind=$(git rev-list --left-right --count "$upstream"...HEAD 2>/dev/null)
       local behind_count=$(echo "$git_ahead_behind" | awk '{print $1}')
       local ahead_count=$(echo "$git_ahead_behind" | awk '{print $2}')
 
