@@ -54,6 +54,9 @@ function power_prompt_colorize () {
 
 function power_prompt_builder(){
   POWER_PROMPT_STATUS="$?"
+  if declare -f POWER_PROMPT_RUN_BEFORE &>/dev/null; then
+    POWER_PROMPT_RUN_BEFORE
+  fi
   local modules
   PS1="\n"
   #
@@ -62,7 +65,7 @@ function power_prompt_builder(){
   unset IFS
   local texts=() fgs=() bgs=()
   for module in "${modules[@]}"; do
-    # Call the module passing in the status
+    # Call the module
     result="$( $module )"
     IFS=',' read -r  text fg bg <<< "$result"
 
@@ -90,6 +93,11 @@ function power_prompt_builder(){
     # Format each module output and append to PS1
     PS1="$PS1$(power_prompt_colorize " ${texts[$i]} " "${fgs[$i]}" "${bgs[$i]}" $next_backgroung $begin)"
   done
+  if declare -f POWER_PROMPT_RUN_AFTER &>/dev/null; then
+    POWER_PROMPT_RUN_AFTER
+  fi
+  POWER_PROMPT_PREVIOUS_WD=$(pwd)
+  POWER_PROMPT_PREVIOUS_TIMESTAMP=$(date +%s)
   PS1="$PS1 "
 }
 
