@@ -17,9 +17,9 @@
 
 
 function power_prompt_statuses(){
-  local fg=240 bg=255 text="" GIT=false PYTHON=false
+  local fg=240 bg=255 text="" GIT=false PYTHON=false git_sign="" python_sign=""
   local OPTIND
-  while getopts "b:f:gp" flag; do
+  while getopts "b:f:gpG:P:" flag; do
     case "${flag}" in
       f)
 	fg=$OPTARG
@@ -30,8 +30,16 @@ function power_prompt_statuses(){
       g)
 	GIT=true
 	;;
+      G)
+	GIT=true
+	git_sign=$OPTARG
+	;;
       p)
 	PYTHON=true
+	;;
+      P)
+	PYTHON=true
+	python_sign=$OPTARG
 	;;
     esac
 
@@ -39,7 +47,7 @@ function power_prompt_statuses(){
   shift $((OPTIND - 1))
   local statuses=""
   if [[ $PYTHON == "true" ]] && [[ -n "$VIRTUAL_ENV" ]]; then
-    statuses=" "
+    statuses="$python_sign "
   fi
 
   git_branch=$(git branch 2>/dev/null | sed -n -e 's/^\* \(.*\)/\1/p')
@@ -70,7 +78,7 @@ function power_prompt_statuses(){
     fi
     # add 󰫢 if there are uncommitted changes in git repo
     if [[ -n $(git status --porcelain 2>/dev/null) ]]; then
-      statuses=" $statuses"
+      statuses="$git_sign $statuses"
     fi
   fi
   statuses="$(echo "$statuses" | sed 's/[[:space:]]*$//')"
