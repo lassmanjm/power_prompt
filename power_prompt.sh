@@ -1,12 +1,35 @@
 #! /bin/bash
 
-export POWER_PROMPT_STRING="power_prompt_statuses -pg -f 11 -b 98;power_prompt_text -t \u -f 15 -b 68;power_prompt_text -t \h -f 15 -b 110;power_prompt_git_status_directory;"
+# Override these values to configure power prompt:
+# - POWER_PROMPT_STRING: Select modules, module specific settings (through flags and parameters),
+#     and module order
+# - POWER_PROMPT_DELIMITER: Delimiting character that determines the shape of each module.
+#     Examples:
+#       - : gives modules the shape  ███████████ (Default)
+#
+#       - : gives modules the shape  ███████████
+#
+#       - : gives modules the shape  ███████████
+#
+#       - Any other character in your font. Examples can be found in delimiters.txt.
+#           Must be counted as single width by bash or will cause bugs with scroll
+#           history (e.g. try 󰓗 and see what happens when scrolling with arrow keys)
 
-# Supported options are  , , or , but can use any character
-export POWER_PROMPT_DELIMITER=""
+export DEFAULT_POWER_PROMPT_STRING="power_prompt_statuses -pg -f 11 -b 98;power_prompt_text -t \u -f 15 -b 68;power_prompt_text -t \h -f 15 -b 110;power_prompt_git_status_directory;"
+if [[ -z $POWER_PROMPT_STRING ]]; then
+ export POWER_PROMPT_STRING=$DEFAULT_POWER_PROMPT_STRING
+fi
 
-# , , or  respectively
-export POWER_PROMPT_BEGIN_CHAR=""
+export DEFAULT_POWER_PROMPT_DELIMITER=""
+if [[ -z $POWER_PROMPT_DELIMITER ]]; then
+ export POWER_PROMPT_DELIMITER=$DEFAULT_POWER_PROMPT_DELIMITER
+fi
+
+#  can be used to match default delimeter
+export DEFAULT_POWER_PROMPT_BEGIN_CHAR=""
+if [[ -z $POWER_PROMPT_BEGIN_CHAR ]]; then
+ export POWER_PROMPT_BEGIN_CHAR=$DEFAULT_POWER_PROMPT_BEGIN_CHAR
+fi
 
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 for file in $SCRIPT_DIR/modules/*.sh; do
