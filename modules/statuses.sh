@@ -16,6 +16,36 @@
 #     export POWER_PROMPT_STRING="...;power_prompt_statuses -p -f 240 -b 255;..."
 
 
+# Add this to POWER_PROMPT_RUN_BEFORE function to fetch at regular intervals. This will
+# decrease latency significantly. Without adding this, fetches will not happen automatically,
+# and the ahead/behind arrows will not necessarily be accurate.
+function power_prompt_statuses_run_before(){
+  # Get current branch, return if not found meaning not in a repo directory
+  local git_branch=$(git branch 2>/dev/null | sed -n -e 's/^\* \(.*\)/\1/p')
+  [[ -z $git_branch ]] && return 0
+
+  local curr_time=$(date +%s)
+  # Default to refresh every 30 seconds
+  local refresh_time=30
+  if [[ $# -gt 0 ]]; then
+    refresh_time=$1
+  fi
+
+  #Only fetch if the directory has changed or it has been long enogh
+  if [[ $(pwd) != $POWER_PROMPT_PREVIOUS_WD ]] || [[ $((curr_time-POWER_PROMPT_GIT_LAST_UPSTREAM_CHECK)) -gt $refresh_time ]]; then
+    # compare local and remote hashed (this is faster than a fetch)
+    local remote_hash=$(git ls-remote origin -h refs/heads/$git_branch 2>/dev/null| awk '{print $1}')
+    local local_hash=$(git rev-parse HEAD)
+
+    # only fetch if the hashes do not match
+    if [ "$remote_hash" != "$local_hash" ]; then
+      git fetch --quiet >/dev/null 2>&1
+    fi
+    POWER_PROMPT_GIT_LAST_UPSTREAM_CHECK=$(date +%s)
+  fi
+}
+
+
 function power_prompt_statuses(){
   local fg=240 bg=255 text="" GIT=false PYTHON=false git_sign="" python_sign=""
   local OPTIND
@@ -52,13 +82,6 @@ function power_prompt_statuses(){
 
   git_branch=$(git branch 2>/dev/null | sed -n -e 's/^\* \(.*\)/\1/p')
   if [[ $GIT == "true" ]] && [[ -n "$git_branch" ]]; then
-    local remote_hash=$(git ls-remote origin -h refs/heads/$git_branch 2>/dev/null| awk '{print $1}')
-    local local_hash=$(git rev-parse HEAD)
-    # only fetch if the hashes do not match
-    if [ "$remote_hash" != "$local_hash" ]; then
-      git fetch --quiet >/dev/null 2>&1
-    fi
-
     # check if the branch has an upstream (remote) branch
     local upstream=$(git rev-parse --abbrev-ref "@{upstream}" 2>/dev/null)
     if [ -n "$upstream" ]; then
