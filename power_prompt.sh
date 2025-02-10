@@ -53,7 +53,7 @@ function power_prompt_colorize () {
 }
 
 function power_prompt_builder(){
-  local status="$?"
+  POWER_PROMPT_STATUS="$?"
   local modules
   PS1="\n"
   #
@@ -63,7 +63,7 @@ function power_prompt_builder(){
   local texts=() fgs=() bgs=()
   for module in "${modules[@]}"; do
     # Call the module passing in the status
-    result="$($module "$status")"
+    result="$( $module )"
     IFS=',' read -r  text fg bg <<< "$result"
 
     # Skip the module if the text is empty

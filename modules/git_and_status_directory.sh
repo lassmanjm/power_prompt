@@ -52,7 +52,7 @@ function power_prompt_git_status_directory(){
   done
   shift $((OPTIND - 1))
   local fg=$success_fg bg=$success_bg
-  if [[  "$1" -ne "0"  ]]; then
+  if [[  "$POWER_PROMPT_STATUS" -ne "0"  ]]; then
     fg=$error_fg
     bg=$error_bg
   fi
