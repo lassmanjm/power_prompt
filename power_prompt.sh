@@ -81,9 +81,9 @@ function power_prompt_builder(){
   n="${#texts[@]}"
   for i in $(seq 0 $((n-1))); do 
     # Set the next backgound from the next module
-    local next_backgroung=""
+    local next_background=""
     if [[ $i -lt $((n-1)) ]]; then
-      next_backgroung="${bgs[$((i+1))]}"
+      next_background="${bgs[$((i+1))]}"
     fi
     # Add beginning character to module if it is the first and the begin char is defined.
     begin=""
@@ -91,7 +91,7 @@ function power_prompt_builder(){
       begin="$POWER_PROMPT_BEGIN_CHAR"
     fi
     # Format each module output and append to PS1
-    PS1="$PS1$(power_prompt_colorize " ${texts[$i]} " "${fgs[$i]}" "${bgs[$i]}" $next_backgroung $begin)"
+    PS1="$PS1$(power_prompt_colorize " ${texts[$i]} " "${fgs[$i]}" "${bgs[$i]}" $next_background $begin)"
   done
   if declare -f POWER_PROMPT_RUN_AFTER &>/dev/null; then
     POWER_PROMPT_RUN_AFTER
