@@ -52,5 +52,5 @@ function power_prompt_status_directory(){
     bg=$error_bg
     delim=$error_delim
   fi
-  echo "$w,$fg,$bg,$delim"
+  export POWER_PROMPT_OUTPUT="$w,$fg,$bg,$delim"
 }

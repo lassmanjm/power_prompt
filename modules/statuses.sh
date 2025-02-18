@@ -108,5 +108,5 @@ function power_prompt_statuses(){
     fi
   fi
   statuses="$(echo "$statuses" | sed 's/[[:space:]]*$//')"
-  echo "$statuses,$fg,$bg,$delimiter"
+  export POWER_PROMPT_OUTPUT="$statuses,$fg,$bg,$delimiter"
 }

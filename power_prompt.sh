@@ -91,8 +91,9 @@ function power_prompt_builder(){
   local text texts=() fgs fgs=() bgs bgs=() delimiter delimiters=()
   for module in "${modules[@]}"; do
     # Call the module
-    result="$(eval "$module" )"
-    IFS=',' read -r  text fg bg delimiter <<< "$result"
+    unset POWER_PROMPT_OUTPUT
+    eval "$module"
+    IFS=',' read -r  text fg bg delimiter <<< "$POWER_PROMPT_OUTPUT"
 
     # Skip the module if the text is empty
     if [[ -z $text ]]; then continue; fi
