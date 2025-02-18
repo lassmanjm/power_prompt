@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Override these values to configure power prompt:
-# - POWER_PROMPT_STRING: Select modules, module specific settings (through flags and parameters),
+# - POWER_PROMPT_MODULES: Select modules, module specific settings (through flags and parameters),
 #     and module order
 # - POWER_PROMPT_DELIMITER: Delimiting character that determines the shape of each module.
 #     Examples:
@@ -15,9 +15,14 @@
 #           Must be counted as single width by bash or will cause bugs with scroll
 #           history (e.g. try 󰓗 and see what happens when scrolling with arrow keys)
 
-export DEFAULT_POWER_PROMPT_STRING="power_prompt_statuses -pg -f 11 -b 98;power_prompt_text -t \u -f 15 -b 68;power_prompt_text -t \h -f 15 -b 110;power_prompt_git_status_directory;"
-if [[ -z $POWER_PROMPT_STRING ]]; then
- export POWER_PROMPT_STRING=$DEFAULT_POWER_PROMPT_STRING
+export DEFAULT_POWER_PROMPT_MODULES=" \
+  power_prompt_statuses -pg -f 11 -b 98; \
+  power_prompt_text -t '\u' -f 15 -b 68; \
+  power_prompt_text -t '\h' -f 15 -b 110; \
+  power_prompt_git_status_directory; \
+  "
+if [[ -z $POWER_PROMPT_MODULES ]]; then
+ export POWER_PROMPT_MODULES=$DEFAULT_POWER_PROMPT_MODULES
 fi
 
 export DEFAULT_POWER_PROMPT_DELIMITER=""
@@ -81,7 +86,7 @@ function power_prompt_builder(){
   PS1="\n"
   #
   # Extract module calls
-  IFS=';' read -r -a modules <<< "$POWER_PROMPT_STRING"
+  IFS=';' read -r -a modules <<< "$POWER_PROMPT_MODULES"
   unset IFS
   local text texts=() fgs fgs=() bgs bgs=() delimiter delimiters=()
   for module in "${modules[@]}"; do
