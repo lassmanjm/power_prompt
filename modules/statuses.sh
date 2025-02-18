@@ -47,15 +47,18 @@ function power_prompt_statuses_run_before(){
 
 
 function power_prompt_statuses(){
-  local fg=240 bg=255 text="" GIT=false PYTHON=false git_sign="" python_sign=""
+  local fg=240 bg=255 delimiter text="" GIT=false PYTHON=false git_sign="" python_sign="" 
   local OPTIND
-  while getopts "b:f:gpG:P:" flag; do
+  while getopts "b:f:d:gpG:P:" flag; do
     case "${flag}" in
       f)
 	fg=$OPTARG
 	;;
       b)
 	bg=$OPTARG
+	;;
+      d)
+	delimiter=$OPTARG
 	;;
       g)
 	GIT=true
@@ -105,5 +108,5 @@ function power_prompt_statuses(){
     fi
   fi
   statuses="$(echo "$statuses" | sed 's/[[:space:]]*$//')"
-  echo "$statuses,$fg,$bg"
+  echo "$statuses,$fg,$bg,$delimiter"
 }

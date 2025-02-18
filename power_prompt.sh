@@ -36,20 +36,40 @@ for file in $SCRIPT_DIR/modules/*.sh; do
   source $file
 done
 
-function power_prompt_colorize () {
-  # If there are more than for aruments use the fifth for the beginning char. Should only be used for the first module.
-  begin=""
-  if [[ $# -gt 4 ]]; then
-    begin="\[\e[38;5;${3}m\]$5\[\e[0m\]"
+function power_prompt_format () {
+  local OPTIND
+  local text foreground background next_background start end
+  while getopts "t:f:b:n:s:e:" flag; do
+    case "${flag}" in
+      t)
+        text=$OPTARG
+        ;;
+      f)
+        foreground=$OPTARG
+        ;;
+      b)
+        background=$OPTARG
+        ;;
+      n)
+        next_background=$OPTARG
+        ;;
+      s)
+        start=$OPTARG
+        ;;
+      e)
+        end=$OPTARG
+        ;;
+    esac
+  done
+  if [[ -n $start ]]; then
+    start="\[\e[38;5;${background}m\]$start\[\e[0m\]"
   fi
-  # If there are more than three, the fourth describes the next section background color. Should be empty for the final module.
-  next_bg=""
-  if [[ $# -gt 3 ]]; then
-    next_bg=";48;5;$4"
+  if [[ -n $next_background ]]; then
+    next_background=";48;5;$next_background"
   fi
   # Display begginning char if this is the first module, then text on givin backround color,
   # then delimiter in background color on next background color background
-  echo "$begin\[\e[1;38;5;${2};48;5;${3}m\]${1}\[\e[0m\]\[\e[38;5;${3}${next_bg}m\]$POWER_PROMPT_DELIMITER\[\e[0m\]"
+  echo "$start\[\e[1;38;5;${foreground};48;5;${background}m\]${text}\[\e[0m\]\[\e[38;5;${background}${next_background}m\]$end\[\e[0m\]"
 }
 
 function power_prompt_builder(){
@@ -63,20 +83,22 @@ function power_prompt_builder(){
   # Extract module calls
   IFS=';' read -r -a modules <<< "$POWER_PROMPT_STRING"
   unset IFS
-  local texts=() fgs=() bgs=()
+  local text texts=() fgs fgs=() bgs bgs=() delimiter delimiters=()
   for module in "${modules[@]}"; do
     # Call the module
-    result="$( $module )"
-    IFS=',' read -r  text fg bg <<< "$result"
+    result="$(eval "$module" )"
+    IFS=',' read -r  text fg bg delimiter <<< "$result"
 
     # Skip the module if the text is empty
     if [[ -z $text ]]; then continue; fi
     # Default colors
     [[ -z $fg ]] && fg=240
     [[ -z $bg ]] && bg=255
+    [[ -z $delimiter ]] && delimiter=$POWER_PROMPT_DELIMITER
     texts+=("$text")
     fgs+=("$fg")
     bgs+=("$bg")
+    delimiters+=("$delimiter")
   done
   n="${#texts[@]}"
   for i in $(seq 0 $((n-1))); do 
@@ -91,7 +113,7 @@ function power_prompt_builder(){
       begin="$POWER_PROMPT_BEGIN_CHAR"
     fi
     # Format each module output and append to PS1
-    PS1="$PS1$(power_prompt_colorize " ${texts[$i]} " "${fgs[$i]}" "${bgs[$i]}" $next_background $begin)"
+    PS1="$PS1$( power_prompt_format -t " ${texts[$i]} " -f "${fgs[$i]}" -b "${bgs[$i]}" -n "$next_background" -e "${delimiters[$i]}"  -s "$begin" )"
   done
   if declare -f POWER_PROMPT_RUN_AFTER &>/dev/null; then
     POWER_PROMPT_RUN_AFTER

@@ -15,22 +15,25 @@
 #     export POWER_PROMPT_STRING="...;power_prompt_text -t \u -f 240 -b 255;..."
 
 function power_prompt_text(){
-  local fg=240 bg=255 text=""
+  local fg=240 bg=255 text="" delimiter=""
   local OPTIND
   local check_status=false
-  while getopts "t:b:f:" flag; do
+  while getopts "t:b:f:d:" flag; do
     case "${flag}" in
+      t)
+	text="$OPTARG"
+	;;
       f)
 	fg=$OPTARG
 	;;
       b)
 	bg=$OPTARG
 	;;
-      t)
-	text="$OPTARG"
+      d)
+	delimiter=$OPTARG
 	;;
     esac
   done
   shift $((OPTIND - 1))
-  echo "$text,$fg,$bg"
+  echo "$text,$fg,$bg,$delimiter"
 }
