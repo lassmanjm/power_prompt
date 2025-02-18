@@ -27,7 +27,7 @@ function power_prompt_git_status_directory(){
   #DEFAULT: dark grey on off-white
   local success_fg=240 success_bg=255 success_delim=""
   #DEFAULT: white on red
-  local error_fg=15 error_bg=167 error_delim=" "
+  local error_fg=15 error_bg=167 error_delim=""
 
 
   # Use partial path by default
