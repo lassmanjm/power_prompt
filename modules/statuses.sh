@@ -12,8 +12,8 @@
 #     a python VENV is activated. DEFAULT: 
 #   -[f]oreground color: The 256 color of the text font. DEFAULT: dark grey.
 #   -[b]ackground color: The 256 color of the text background. DEFAULT: off-white
-#   -[d]elimiter: The delimiter string for the module. Default: "" (will be overridden
-#     by POWER_PROMPT_DELIMITER
+#   -[d]elimiter: The delimiter string for the module. Default: ""
+#   -[B]egin: The beginning string of the module. Default: ""
 #   -[r]efresh rate: Time in seconds between git refreshes. I.e., until that time has passed,
 #     a git fetch will not be run to compare to upstream. DEFAULT: 30
 #
@@ -25,9 +25,9 @@
 
 function power_prompt_statuses(){
   # Default values
-  local fg=240 bg=255 delimiter text="" GIT=false PYTHON=false git_sign="" python_sign="" refresh_rate=30
+  local fg=240 bg=255 delimiter begin text="" GIT=false PYTHON=false git_sign="" python_sign="" refresh_rate=30
   local OPTIND
-  while getopts "b:f:d:gG:pP:r:" flag; do
+  while getopts "f:b:d:B:gG:pP:r:" flag; do
     case "${flag}" in
       f)
 	# Foreground color
@@ -40,6 +40,10 @@ function power_prompt_statuses(){
       d)
 	# Delimiter string
 	delimiter=$OPTARG
+	;;
+      B)
+	# Begin string
+	begin=$OPTARG
 	;;
       g)
 	# Show git statuses
@@ -116,5 +120,5 @@ function power_prompt_statuses(){
     fi
   fi
   statuses="$(echo "$statuses" | sed 's/[[:space:]]*$//')"
-  POWER_PROMPT_OUTPUT="$statuses,$fg,$bg,$delimiter"
+  POWER_PROMPT_OUTPUT="$statuses,$fg,$bg,$delimiter,$begin"
 }

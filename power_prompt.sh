@@ -70,17 +70,17 @@ function power_prompt_builder(){
   # Extract module calls
   IFS=';' read -r -a modules <<< "$POWER_PROMPT_MODULES"
   unset IFS
-  local text texts=() fgs fgs=() bgs bgs=() delimiter delimiters=()
+  local text texts=() fgs fgs=() bgs bgs=() delimiter delimiters=() begin begins=()
   for module in "${modules[@]}"; do
     # Erase previous output
     unset POWER_PROMPT_OUTPUT
     # Call the module
     eval "$module"
-    IFS=',' read -r  text fg bg delimiter <<< "$POWER_PROMPT_OUTPUT"
+    IFS=',' read -r  text fg bg delimiter begin <<< "$POWER_PROMPT_OUTPUT"
 
     # Skip the module if the text is empty
     if [[ -z $text ]]; then continue; fi
-    # Default colors
+    # Default colors and delimiter
     [[ -z $fg ]] && fg=240
     [[ -z $bg ]] && bg=255
     [[ -z $delimiter ]] && delimiter=$POWER_PROMPT_DELIMITER
@@ -88,6 +88,7 @@ function power_prompt_builder(){
     fgs+=("$fg")
     bgs+=("$bg")
     delimiters+=("$delimiter")
+    begins+=("$begin")
   done
   n="${#texts[@]}"
   for i in $(seq 0 $((n-1))); do 
@@ -96,13 +97,17 @@ function power_prompt_builder(){
     if [[ $i -lt $((n-1)) ]]; then
       next_background="${bgs[$((i+1))]}"
     fi
+    local previous_background=""
+    if [[ $i -gt $((0)) ]]; then
+      previous_background="${bgs[$((i-1))]}"
+    fi
     # Add beginning character to module if it is the first and the begin char is defined.
-    begin=""
-    if [[ -n "$POWER_PROMPT_BEGIN" ]] && [[ $i -eq 0 ]]; then
+    begin="${begins[$i]}"
+    if [[ -n "$POWER_PROMPT_BEGIN" ]] && [[ $i -eq 0 ]] && [[ -z $begin ]]; then
       begin="$POWER_PROMPT_BEGIN"
     fi
     # Format each module output and append to PS1
-    PS1="$PS1$( power_prompt_format -t " ${texts[$i]} " -f "${fgs[$i]}" -b "${bgs[$i]}" -n "$next_background" -e "${delimiters[$i]}"  -s "$begin" )"
+    PS1="$PS1$( power_prompt_format -t " ${texts[$i]} " -f "${fgs[$i]}" -b "${bgs[$i]}" -p "$previous_background" -n "$next_background" -e "${delimiters[$i]}"  -s "$begin" )"
   done
 
   # Run all methods in POWER_PROMPT_RUN_AFTER
