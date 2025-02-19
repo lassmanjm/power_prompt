@@ -31,9 +31,9 @@ if [[ -z $POWER_PROMPT_DELIMITER ]]; then
 fi
 
 #  can be used to match default delimeter
-export DEFAULT_POWER_PROMPT_BEGIN_CHAR=""
-if [[ -z $POWER_PROMPT_BEGIN_CHAR ]]; then
- export POWER_PROMPT_BEGIN_CHAR=$DEFAULT_POWER_PROMPT_BEGIN_CHAR
+export DEFAULT_POWER_PROMPT_BEGIN=""
+if [[ -z $POWER_PROMPT_BEGIN ]]; then
+ export POWER_PROMPT_BEGIN=$DEFAULT_POWER_PROMPT_BEGIN
 fi
 
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
@@ -79,19 +79,26 @@ function power_prompt_format () {
 
 function power_prompt_builder(){
   POWER_PROMPT_STATUS="$?"
-  if declare -f POWER_PROMPT_RUN_BEFORE &>/dev/null; then
-    POWER_PROMPT_RUN_BEFORE
-  fi
+  local run_befores
+
+  # Run all methods in POWER_PROMPT_RUN_BEFORE
+  IFS=';' read -r -a run_befores <<< "$POWER_PROMPT_RUN_BEFORE"
+  unset IFS
+  for method in "${run_befores[@]}"; do
+    eval "$method"
+  done
+
   local modules
   PS1="\n"
-  #
+
   # Extract module calls
   IFS=';' read -r -a modules <<< "$POWER_PROMPT_MODULES"
   unset IFS
   local text texts=() fgs fgs=() bgs bgs=() delimiter delimiters=()
   for module in "${modules[@]}"; do
-    # Call the module
+    # Erase previous output
     unset POWER_PROMPT_OUTPUT
+    # Call the module
     eval "$module"
     IFS=',' read -r  text fg bg delimiter <<< "$POWER_PROMPT_OUTPUT"
 
@@ -115,15 +122,19 @@ function power_prompt_builder(){
     fi
     # Add beginning character to module if it is the first and the begin char is defined.
     begin=""
-    if [[ -n "$POWER_PROMPT_BEGIN_CHAR" ]] && [[ $i -eq 0 ]]; then
-      begin="$POWER_PROMPT_BEGIN_CHAR"
+    if [[ -n "$POWER_PROMPT_BEGIN" ]] && [[ $i -eq 0 ]]; then
+      begin="$POWER_PROMPT_BEGIN"
     fi
     # Format each module output and append to PS1
     PS1="$PS1$( power_prompt_format -t " ${texts[$i]} " -f "${fgs[$i]}" -b "${bgs[$i]}" -n "$next_background" -e "${delimiters[$i]}"  -s "$begin" )"
   done
-  if declare -f POWER_PROMPT_RUN_AFTER &>/dev/null; then
-    POWER_PROMPT_RUN_AFTER
-  fi
+
+  # Run all methods in POWER_PROMPT_RUN_AFTER
+  IFS=';' read -r -a run_afters <<< "$POWER_PROMPT_RUN_AFTER"
+  unset IFS
+  for method in "${run_afters[@]}"; do
+    eval "$method"
+  done
   POWER_PROMPT_PREVIOUS_WD=$(pwd)
   POWER_PROMPT_PREVIOUS_TIMESTAMP=$(date +%s)
   PS1="$PS1 "
