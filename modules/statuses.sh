@@ -75,7 +75,7 @@ function power_prompt_statuses(){
   fi
 
   # Check if current dir is inside a git repo
-  git_branch=$(git branch 2>/dev/null | sed -n -e 's/^\* \(.*\)/\1/p')
+  local git_branch=$(git branch 2>/dev/null | sed -n -e 's/^\* \(.*\)/\1/p')
   if [[ $GIT == "true" ]] && [[ -n "$git_branch" ]]; then
 
     # check if the branch has an upstream (remote) branch
