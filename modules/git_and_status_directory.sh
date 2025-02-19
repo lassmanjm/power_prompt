@@ -60,10 +60,11 @@ function power_prompt_git_status_directory(){
   fi
   git_branch=$(git branch 2>/dev/null | sed -n -e 's/^\* \(.*\)/\1/p')
   if [ -n "$git_branch" ]; then
+    w=" $w"
     local url=$( git ls-remote --get-url origin | sed -E 's|(http[s]?://)[^@]*@|\1|' )
     if [[ "$url" != "origin" ]]; then
       # Add hyperlink to github repo on cwd in prompt
-      w="$( power_prompt_hyperlink $url " $w" )"
+      w="$( power_prompt_hyperlink $url "$w" )"
     fi
   fi
   export POWER_PROMPT_OUTPUT="$w,$fg,$bg,$delimiter"
