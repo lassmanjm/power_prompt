@@ -67,6 +67,6 @@ function power_prompt_git_status_directory(){
       w="$( power_prompt_hyperlink $url "$w" )"
     fi
   fi
-  export POWER_PROMPT_OUTPUT="$w,$fg,$bg,$delimiter"
+  POWER_PROMPT_OUTPUT="$w,$fg,$bg,$delimiter"
 }
 

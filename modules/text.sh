@@ -35,5 +35,5 @@ function power_prompt_text(){
     esac
   done
   shift $((OPTIND - 1))
-  export POWER_PROMPT_OUTPUT="$text,$fg,$bg,$delimiter"
+  POWER_PROMPT_OUTPUT="$text,$fg,$bg,$delimiter"
 }
