@@ -15,25 +15,22 @@
 #           Must be counted as single width by bash or will cause bugs with scroll
 #           history (e.g. try 󰓗 and see what happens when scrolling with arrow keys)
 
-export DEFAULT_POWER_PROMPT_MODULES=" \
+if [[ -z $POWER_PROMPT_MODULES ]]; then
+ export POWER_PROMPT_MODULES=" \
   power_prompt_statuses -pg -f 11 -b 98; \
   power_prompt_text -t '\u' -f 15 -b 68; \
   power_prompt_text -t '\h' -f 15 -b 110; \
   power_prompt_git_status_directory; \
   "
-if [[ -z $POWER_PROMPT_MODULES ]]; then
- export POWER_PROMPT_MODULES=$DEFAULT_POWER_PROMPT_MODULES
 fi
 
-export DEFAULT_POWER_PROMPT_DELIMITER=""
 if [[ -z $POWER_PROMPT_DELIMITER ]]; then
- export POWER_PROMPT_DELIMITER=$DEFAULT_POWER_PROMPT_DELIMITER
+ export POWER_PROMPT_DELIMITER=""
 fi
 
 #  can be used to match default delimeter
-export DEFAULT_POWER_PROMPT_BEGIN=""
 if [[ -z $POWER_PROMPT_BEGIN ]]; then
- export POWER_PROMPT_BEGIN=$DEFAULT_POWER_PROMPT_BEGIN
+ export POWER_PROMPT_BEGIN=""
 fi
 
 SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
