@@ -4,7 +4,6 @@
 # Default colors are dark grey on off-white.
 # Flags:
 #   -[t]ext: Any text including escape sequences (https://tldp.org/HOWTO/Bash-Prompt-HOWTO/bash-prompt-escape-sequences.html)
-#     MUST NOT INCLUDE SPACES. If text including spaces is required, make a custom module
 #   -[f]oreground color: The 256 color of the text font
 #   -[b]ackground color: The 256 color of the text background
 #   -[d]elimiter: The delimiter string for the module. Default: ""
