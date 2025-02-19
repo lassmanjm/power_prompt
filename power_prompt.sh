@@ -2,14 +2,28 @@
 
 # Override these values to configure power prompt:
 # - POWER_PROMPT_MODULES: Select modules, module specific settings (through flags and parameters),
-#     and module order
-# - POWER_PROMPT_DELIMITER: Delimiting character that determines the shape of each module.
+#     and module order. Modules are are functions that set the POWER_PROMPT_OUTPUT variable to a ','
+#     delimited string of text,forground color, background color, and optional delimiter. Examples
+#     can be found in the 'modules' directory.
+# - POWER_PROMPT_DELIMITER: Delimiting string that determines the shape of each module.
 #     Examples:
 #       - : gives modules the shape  ███████████ (Default)
 #
 #       - : gives modules the shape  ███████████
 #
 #       - : gives modules the shape  ███████████
+#
+#       - Any other character in your font. Examples can be found in delimiters.txt.
+#           Must be counted as single width by bash or will cause bugs with scroll
+#           history (e.g. try 󰓗 and see what happens when scrolling with arrow keys)
+# - POWER_PROMPT_BEGIN: Start string that determines the shape of the left side of the
+#     first module.
+#     Examples:
+#       - : gives modules the shape  ███████████ (to match Default)
+#
+#       - : gives modules the shape  ███████████
+#
+#       - : gives modules the shape  ███████████
 #
 #       - Any other character in your font. Examples can be found in delimiters.txt.
 #           Must be counted as single width by bash or will cause bugs with scroll
