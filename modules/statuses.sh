@@ -120,5 +120,5 @@ function power_prompt_statuses(){
     fi
   fi
   statuses="$(echo "$statuses" | sed 's/[[:space:]]*$//')"
-  POWER_PROMPT_OUTPUT="$statuses,$fg,$bg,$delimiter,$begin"
+  POWER_PROMPT_OUTPUT="#!$statuses,$fg,$bg,$delimiter,$begin"
 }
